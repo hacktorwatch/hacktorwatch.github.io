@@ -1,0 +1,361 @@
+{
+  "project": "Hacktor Watch site assets",
+  "images": [
+    {
+      "name": "hero-watch.webp",
+      "source": "assets/edited/hero-gemini-mon28may-1957.png",
+      "quality": 92,
+      "kind": "generated product illustration",
+      "origin": "Dan-supplied Gemini hero, with ImageGen background removal and dial lettering edits.",
+      "limits": "Editorial hero; not documentary hardware evidence or a shipping-product photograph.",
+      "source_sha256": "6909c2065fbe52345034c7ae0811d926447df33f4679d226998a02c9a1f5669e",
+      "source_dimensions": [
+        1174,
+        1340
+      ],
+      "crop_box": [
+        79,
+        21,
+        1162,
+        1340
+      ],
+      "dimensions": [
+        1083,
+        1319
+      ],
+      "alpha": true,
+      "bytes": 157028,
+      "sha256": "dad609a1b784064b754d15fad7a635738cfea12faf882e04cdf3387aa1198559",
+      "operation": "Exact transparent-padding crop where present; proportional resize; WebP encoding. No retouch or new content."
+    },
+    {
+      "name": "hero-watch-640.webp",
+      "source": "assets/edited/hero-gemini-mon28may-1957.png",
+      "quality": 90,
+      "kind": "generated product illustration",
+      "origin": "Responsive derivative of the same supplied/generated hero.",
+      "limits": "Same editorial-only scope as hero-watch.webp.",
+      "source_sha256": "6909c2065fbe52345034c7ae0811d926447df33f4679d226998a02c9a1f5669e",
+      "source_dimensions": [
+        1174,
+        1340
+      ],
+      "crop_box": [
+        79,
+        21,
+        1162,
+        1340
+      ],
+      "dimensions": [
+        640,
+        779
+      ],
+      "alpha": true,
+      "bytes": 70686,
+      "sha256": "bf5fbdb7da23a6da7728c5464d09afbfbdb524a302a15bc66d14dafa09f8b2a6",
+      "operation": "Exact transparent-padding crop where present; proportional resize; WebP encoding. No retouch or new content."
+    },
+    {
+      "name": "pcb.webp",
+      "source": "assets/edited/pcb-cutout.png",
+      "quality": 92,
+      "kind": "retouched real photograph",
+      "origin": "Dan's phone photograph assets/raw pictures/20261103_150906.jpg; ImageGen background/lighting treatment.",
+      "limits": "Use original photographs and schematics for exact component markings and revision-specific claims.",
+      "source_sha256": "5ae2b7ba4e43a46c462abb2965970e59da87984ccdd8be9adadc6f402e3ab0aa",
+      "source_dimensions": [
+        1086,
+        1449
+      ],
+      "crop_box": [
+        0,
+        11,
+        1068,
+        1441
+      ],
+      "dimensions": [
+        1046,
+        1400
+      ],
+      "alpha": true,
+      "bytes": 289614,
+      "sha256": "50888367effcaa5d6c903575d92c2a023bb0f4bfbe2eb4fef8988faba473e6cc",
+      "operation": "Exact transparent-padding crop where present; proportional resize; WebP encoding. No retouch or new content."
+    },
+    {
+      "name": "pcb-hand.webp",
+      "source": "assets/edited/pcb-in-hand-cutout.png",
+      "quality": 91,
+      "kind": "retouched real photograph",
+      "origin": "Dan's phone photograph assets/raw pictures/20261103_151011.jpg; background extraction/lighting treatment.",
+      "limits": "Physical-scale illustration; not a substitute for a schematic or verified bill of materials.",
+      "source_sha256": "19fb0b904e5d2d63d31f2619c652226339473b569fb85c27bd4565f14aa1526d",
+      "source_dimensions": [
+        842,
+        1868
+      ],
+      "crop_box": [
+        0,
+        32,
+        830,
+        1868
+      ],
+      "dimensions": [
+        633,
+        1400
+      ],
+      "alpha": true,
+      "bytes": 154312,
+      "sha256": "a60ed502aca32a726a1e8b1c4a6e22a63409261ef51fb0dbf0b9c14ca975091d",
+      "operation": "Exact transparent-padding crop where present; proportional resize; WebP encoding. No retouch or new content."
+    },
+    {
+      "name": "wrist-hello.webp",
+      "source": "assets/edited/bringup-wrist-natural-bright-hello-v16.png",
+      "quality": 91,
+      "kind": "retouched real photograph",
+      "origin": "Approved V16 natural wrist retouch of assets/reference/v14-slide06-embedded/image-1.png.",
+      "limits": "Cosmetic skin/hair treatment and brighter original Hello lettering; the scene is a real bring-up photograph.",
+      "source_sha256": "e9ac5d3f97b9cf044b141217ef98e82a3489acbbb70125aa0fb3ae157147c0b3",
+      "source_dimensions": [
+        1122,
+        1402
+      ],
+      "crop_box": [
+        0,
+        0,
+        1122,
+        1402
+      ],
+      "dimensions": [
+        1120,
+        1400
+      ],
+      "alpha": false,
+      "bytes": 166630,
+      "sha256": "9f4016b138f834289833bb1b7f77e52f39c41ab69338f9f605977545a52f90d1",
+      "operation": "Exact transparent-padding crop where present; proportional resize; WebP encoding. No retouch or new content."
+    },
+    {
+      "name": "exploded.webp",
+      "source": "assets/github/exploded_view.png",
+      "quality": 92,
+      "kind": "mechanical CAD render",
+      "origin": "Hacktor Watch 2.0 repository Images/exploded_view.png.",
+      "source_url": "https://github.com/hacktorwatch/Hacktor-Watch-2.0/blob/8234d9b112e0746e14f4d84727739cc576a49137/Images/exploded_view.png",
+      "limits": "Single composite render, not independently movable 3D layers; revision-specific mechanical view.",
+      "source_sha256": "9bf97013a381e2113e59a8691690e14643d0d811264c80df986907d8178ed939",
+      "source_dimensions": [
+        1268,
+        1586
+      ],
+      "crop_box": [
+        0,
+        0,
+        1268,
+        1586
+      ],
+      "dimensions": [
+        1119,
+        1400
+      ],
+      "alpha": false,
+      "bytes": 55552,
+      "sha256": "de9a00e0743e368c75965b8c897855a868f91550a7cc48111ffb61ef6a5bdb65",
+      "operation": "Exact transparent-padding crop where present; proportional resize; WebP encoding. No retouch or new content."
+    },
+    {
+      "name": "watch-blue.webp",
+      "source": "assets/edited/watch-flat-light-blue-strap-v14.png",
+      "quality": 91,
+      "kind": "editorial color treatment",
+      "origin": "V14 soft blue strap edit of the embedded V13 presentation image.",
+      "limits": "Editorial customization illustration; not a purchasable color/SKU or shipping variant claim.",
+      "shipping_variant": false,
+      "source_sha256": "0793f7c148fb65a050c30ef4c7c67d9358305e3fc551c600ae669f89bab8fbdc",
+      "source_dimensions": [
+        724,
+        2173
+      ],
+      "crop_box": [
+        0,
+        0,
+        716,
+        2173
+      ],
+      "dimensions": [
+        527,
+        1600
+      ],
+      "alpha": true,
+      "bytes": 64372,
+      "sha256": "2ceeba99fbc2edfc66d484da6006b65e099d9513956a4d667bd71da90a544a79",
+      "operation": "Exact transparent-padding crop where present; proportional resize; WebP encoding. No retouch or new content."
+    },
+    {
+      "name": "watch-red.webp",
+      "source": "assets/edited/hero-watch-red-strap-v13.png",
+      "quality": 91,
+      "kind": "editorial color treatment",
+      "origin": "V13 red strap treatment of an embedded V12 milestone image.",
+      "limits": "Editorial customization illustration; not a purchasable color/SKU or shipping variant claim.",
+      "shipping_variant": false,
+      "source_sha256": "b09c7e6d6ebeb1f11802b014f03b343df5682f91c16e846dc7ba92f0ec86ebcc",
+      "source_dimensions": [
+        841,
+        1870
+      ],
+      "crop_box": [
+        25,
+        86,
+        830,
+        1475
+      ],
+      "dimensions": [
+        805,
+        1389
+      ],
+      "alpha": true,
+      "bytes": 97356,
+      "sha256": "0a60f1629f4a6cb3e3d3ee9259645080ff361e716bd373f4ce75dc7dc89dcb2d",
+      "operation": "Exact transparent-padding crop where present; proportional resize; WebP encoding. No retouch or new content."
+    },
+    {
+      "name": "lab.webp",
+      "source": "assets/edited/power-measurement.png",
+      "quality": 91,
+      "kind": "retouched real photograph",
+      "origin": "Dan's phone photograph assets/raw pictures/20261103_153043.jpg; lighting/contrast/background treatment.",
+      "limits": "Actual Power Profiler setup. Inactive watch display remains inactive; green light is profiler status, not a current reading. No results are inferred.",
+      "source_sha256": "1a749ae698226c47eef0dd724c2a640c3c466a1f8ea2a236e026b1628f0532dd",
+      "source_dimensions": [
+        1870,
+        841
+      ],
+      "crop_box": [
+        0,
+        0,
+        1864,
+        841
+      ],
+      "dimensions": [
+        1600,
+        722
+      ],
+      "alpha": true,
+      "bytes": 205416,
+      "sha256": "6e675712d73ed221c5b0dce11850ca3a466aef4c2977d84aaa639aae25464df7",
+      "operation": "Exact transparent-padding crop where present; proportional resize; WebP encoding. No retouch or new content."
+    },
+    {
+      "name": "watches.webp",
+      "source": "assets/github/20250808_133324.jpg",
+      "quality": 89,
+      "kind": "real photograph",
+      "origin": "Hacktor Watch 2.0 repository Images/20250808_133324.jpg.",
+      "source_url": "https://github.com/hacktorwatch/Hacktor-Watch-2.0/blob/8234d9b112e0746e14f4d84727739cc576a49137/Images/20250808_133324.jpg",
+      "limits": "Existing project devices and strap variety; not current inventory, price, or an assembled-watch offer.",
+      "source_sha256": "4ac3780810f9a59d1025c3de782f9224023350e9ee0afc641b123d93c08af517",
+      "source_dimensions": [
+        4032,
+        1816
+      ],
+      "crop_box": [
+        0,
+        0,
+        4032,
+        1816
+      ],
+      "dimensions": [
+        1600,
+        721
+      ],
+      "alpha": false,
+      "bytes": 177760,
+      "sha256": "67819f89833239de8bc256f8020afeab0214b017c480737d5e9441e7c06e70a4",
+      "operation": "Exact transparent-padding crop where present; proportional resize; WebP encoding. No retouch or new content."
+    }
+  ],
+  "logos": [
+    {
+      "name": "logos/arduino.svg",
+      "source": "assets/logos/arduino-color-official.svg",
+      "source_url": "https://content.arduino.cc/brand/arduino-color.svg",
+      "bytes": 2166,
+      "sha256": "14ec86fc9891d4d70344976e9392c06b104dc88d583d23a52085b0df59998824",
+      "operation": "Original official SVG copied unchanged; original colors and geometry retained."
+    },
+    {
+      "name": "logos/zephyr.svg",
+      "source": "assets/logos/zephyr-color-official.svg",
+      "source_url": "https://www.zephyrproject.org/wp-content/uploads/2023/03/Zephyr_color-10.svg",
+      "bytes": 5102,
+      "sha256": "aa382a6af4129566ffcf01b7c61a3ec876ca553ece8421928feeda6ba7f96e43",
+      "operation": "Original official SVG copied unchanged; original colors and geometry retained."
+    },
+    {
+      "name": "logos/nuttx.png",
+      "source": "assets/logos/NuttX_Logo.png",
+      "source_url": "https://raw.githubusercontent.com/apache/nuttx/master/Documentation/logos/NuttX_Logo.png",
+      "bytes": 37011,
+      "sha256": "d7f6c426d49dfaca06f5f649b80d3d8eb8fef28299b35cd0a3e7aa0f7627920b",
+      "dimensions": [
+        384,
+        415
+      ],
+      "alpha": true,
+      "operation": "Transparent-padding crop and proportional reduction only; no recoloring or logo redesign."
+    },
+    {
+      "name": "logos/hacktor-mark.png",
+      "source": "assets/reference/hacktor-icon-black.png",
+      "source_url": null,
+      "bytes": 48897,
+      "sha256": "c8a9978b75064ebebfe097363246e8ba8b33e4a0429f6d8e12ebcb2028c53a4b",
+      "dimensions": [
+        383,
+        384
+      ],
+      "alpha": true,
+      "operation": "Transparent-padding crop and proportional reduction only; no recoloring or logo redesign."
+    },
+    {
+      "name": "logos/hacktor-wordmark.png",
+      "source": "assets/reference/hacktor-logo-black.png",
+      "source_url": null,
+      "bytes": 38266,
+      "sha256": "8a45a4ccd0c75e8df705bb51995a8a098f501f4ac1462653632e3e5bd346f5f8",
+      "dimensions": [
+        527,
+        600
+      ],
+      "alpha": true,
+      "operation": "Transparent-padding crop and proportional reduction only; no recoloring or logo redesign."
+    }
+  ],
+  "image_payload_bytes": 1438726,
+  "image_payload_mib": 1.372,
+  "offer_scope": "Initial interest in developer kits/PCBs; imagery does not offer an assembled watch or color SKUs.",
+  "source_assets_untouched": true,
+  "website_artifacts": [
+    {
+      "file": "favicon.svg",
+      "type": "original SVG interface artwork",
+      "notes": "Created in code for this website.",
+      "sha256": "5857c73932ee0c2d023d57e74672205f1ae78fa521e2a244d42d946b21f40a61"
+    },
+    {
+      "file": "hardware-diagram.svg",
+      "type": "unchanged original project drawing",
+      "source": "https://docs.google.com/drawings/d/1u0_o-W6L3w2xveMWQQGLrzZhusZ90oDN8ES3exkrWA4/export/svg",
+      "sha256": "033b57a77998ce5a3211979eaadb53e23362b9c96a66765427edb614d0209e93"
+    },
+    {
+      "file": "social-card.jpg",
+      "type": "deterministic sharing-card layout",
+      "source_asset": "hero-watch.webp",
+      "notes": "The supplied styled hero placed beside website headline text; no new hardware features rendered.",
+      "sha256": "85da50af52de985889895fce9ad5f13363c5144655fe64534450d34108262ec6"
+    }
+  ]
+}
