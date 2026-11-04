@@ -109,7 +109,38 @@
     revealElements.forEach((element) => element.classList.add('is-visible'));
   }
 
-  // Contact information is deliberately provided by the site owner, not guessed.
+  document.querySelectorAll('[data-copy-email]').forEach((button) => {
+    const email = button.dataset.email || window.HACKTOR_SITE_CONFIG?.contactEmail;
+    const card = button.closest('[data-contact-card]');
+    const status = card?.querySelector('[data-copy-status]');
+    if (!email || !status) return;
+    button.addEventListener('click', async () => {
+      button.disabled = true;
+      button.setAttribute('aria-busy', 'true');
+      try {
+        if (!navigator.clipboard?.writeText) throw new Error('Clipboard unavailable');
+        await navigator.clipboard.writeText(email);
+        status.textContent = 'Email address copied.';
+        status.dataset.copyState = 'success';
+      } catch {
+        const address = card.querySelector('[data-contact-email]');
+        if (address && window.getSelection) {
+          const range = document.createRange();
+          range.selectNodeContents(address);
+          const selection = window.getSelection();
+          selection.removeAllRanges();
+          selection.addRange(range);
+        }
+        status.textContent = 'Email address selected. Copy it manually, or use the email button.';
+        status.dataset.copyState = 'error';
+      } finally {
+        button.disabled = false;
+        button.removeAttribute('aria-busy');
+      }
+    });
+  });
+
+  // The visible fallback contact also works without JavaScript.
   const contact = window.HACKTOR_SITE_CONFIG?.privacyContact?.trim();
   if (contact && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact)) {
     document.querySelectorAll('[data-privacy-contact]').forEach((element) => {
