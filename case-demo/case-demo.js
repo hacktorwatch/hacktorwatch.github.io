@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import {RoomEnvironment} from './vendor/RoomEnvironment.js';
+import {createBatteryPack} from './battery-pack.js';
+import {createLidScrews} from './lid-screws.js';
 
 const canvas = document.getElementById('case-canvas');
 const button = document.getElementById('case-playback');
@@ -14,6 +16,7 @@ const [cx, cy] = source.caseCenter;
 const cz = 2.85;
 const watch = new THREE.Group();
 const parts = new Map();
+const screwWithdrawalDistance=6.4, screwFanDistance=18;
 let renderer, camera, scene, clock, texture, screenMaterial, lastState;
 let playing = false, inView = false, request = 0, elapsed = 0, origin = 0;
 const smooth = value => {const t = THREE.MathUtils.clamp(value, 0, 1); return t*t*(3-2*t);};
@@ -137,7 +140,8 @@ function buildBoard() {
     body.position.set(part.x+dx*Math.cos(ang)-dy*Math.sin(ang),part.y+dx*Math.sin(ang)+dy*Math.cos(ang),part.side==='top'?4.4+thickness/2:3.6-thickness/2);
     body.rotation.z=ang;body.castShadow=true;body.receiveShadow=true;pcb.add(body);
   }
-  pcb.position.set(cx, -cy, cz);pcb.rotation.y=Math.PI;
+  // The board sits above the battery, with clearance below the display.
+  pcb.position.set(cx, -cy, cz+2.5);pcb.rotation.y=Math.PI;
   return addPart('pcb',pcb,[0,0,-5]);
 }
 async function buildDisplay() {
@@ -162,41 +166,66 @@ async function buildDisplay() {
   addPart('display',group,[0,0,37]);
 }
 async function buildBattery() {
-  const group=new THREE.Group();
-  const material=new THREE.MeshStandardMaterial({color:0xbcc1c3,roughness:.32,metalness:.65});
-  const body=new THREE.Mesh(new THREE.BoxGeometry(20,30,3.6),material);body.castShadow=true;body.receiveShadow=true;group.add(body);
-  // The original repository's disassembled render includes its real battery
-  // photograph. Use that region as the foil wrapper rather than invent a label.
-  try {
-    const img=await image(new URL('./source/disassembled.png',import.meta.url).href);
-    const c=document.createElement('canvas');c.width=400;c.height=600;
-    c.getContext('2d').drawImage(img,1433,2775,449,727,0,0,400,600);
-    const map=new THREE.CanvasTexture(c);map.colorSpace=THREE.SRGBColorSpace;
-    const wrapper=new THREE.Mesh(new THREE.PlaneGeometry(20,30),new THREE.MeshStandardMaterial({map,roughness:.48,metalness:.25}));
-    wrapper.position.z=1.81;group.add(wrapper);
-  } catch { /* The metal wrapper remains visible if a source image is absent. */ }
-  const tape=new THREE.MeshStandardMaterial({color:0xdcae30,roughness:.42,metalness:.18});
-  for(const y of [-14.6,14.6]){const strip=new THREE.Mesh(new THREE.BoxGeometry(20.3,.8,3.8),tape);strip.position.y=y;group.add(strip);}
-  group.position.set(0,1,1.65);addPart('battery',group,[0,0,9]);
+  const group=await createBatteryPack({sourceImageUrl:new URL('./source/disassembled.png',import.meta.url).href});
+  group.position.set(0,1,-2.3);addPart('battery',group,[0,0,-15]);
+}
+function frameLooseHardware(target, amount) {
+  // The loose fasteners fan clear of the lid. Fit their real projected bounds
+  // while preserving the established camera when all screws are seated.
+  watch.updateMatrixWorld(true);
+  const points=[];
+  for(const part of parts.values()){
+    const box=new THREE.Box3().setFromObject(part);
+    for(const x of [box.min.x,box.max.x])for(const y of [box.min.y,box.max.y])for(const z of [box.min.z,box.max.z])points.push(new THREE.Vector3(x,y,z));
+  }
+  const initialPosition=camera.position.clone(),initialTarget=target.clone();
+  for(let iteration=0;iteration<4;iteration++){
+    camera.lookAt(target);camera.updateMatrixWorld(true);
+    const projected=points.map(p=>p.clone().project(camera));
+    const minX=Math.min(...projected.map(p=>p.x)),maxX=Math.max(...projected.map(p=>p.x));
+    const minY=Math.min(...projected.map(p=>p.y)),maxY=Math.max(...projected.map(p=>p.y));
+    const centerX=(minX+maxX)/2,centerY=(minY+maxY)/2;
+    const halfHeight=camera.position.distanceTo(target)*Math.tan(camera.fov*Math.PI/360);
+    const shift=new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld,0).multiplyScalar(centerX*halfHeight*camera.aspect)
+      .addScaledVector(new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld,1),centerY*halfHeight);
+    camera.position.add(shift);target.add(shift);
+    const scale=Math.max(1,(maxX-minX)/1.8,(maxY-minY)/1.8);
+    camera.position.sub(target).multiplyScalar(scale).add(target);
+    if(Math.abs(centerX)<.002&&Math.abs(centerY)<.002&&scale===1)break;
+  }
+  camera.position.lerpVectors(initialPosition,camera.position.clone(),amount);
+  target.lerpVectors(initialTarget,target.clone(),amount);camera.lookAt(target);
 }
 function timeline(seconds) {
   const phase=((seconds%DURATION)+DURATION)%DURATION;
   const flat=phase<17?span(phase,4,7):1-span(phase,17,20);
   const explosion=phase<14.5?span(phase,8,11.5):1-span(phase,14.5,17);
   const screenOn=(1-span(phase,8.0,8.6))* (phase<14.5?1:0) + span(phase,17.3,18.2);
+  const screwWithdrawal=phase<14.5?span(phase,7.25,8.6):1-span(phase,15.9,17.25);
+  const screwFan=phase<14.5?span(phase,8.6,10):1-span(phase,14.5,15.9);
   let stage='assembled';
   if(phase>=4&&phase<7)stage='rotating';else if(phase>=7&&phase<8)stage='flat';else if(phase>=8&&phase<11.5)stage='exploding';else if(phase>=11.5&&phase<14.5)stage='exploded';else if(phase>=14.5&&phase<17)stage='reassembling';else if(phase>=17)stage='returning';
-  return {phase,flat,explosion,screenOn:Math.min(1,screenOn),stage};
+  return {phase,flat,explosion,screenOn:Math.min(1,screenOn),screwWithdrawal,screwFan,stage};
 }
 function renderAt(seconds) {
   if(!renderer||!clock)return;
-  const state=timeline(seconds),{phase,flat,explosion,screenOn}=state;
+  const state=timeline(seconds),{phase,flat,explosion,screenOn,screwWithdrawal,screwFan}=state;
   watch.quaternion.copy(qFront).slerp(qFlat,flat);
-  watch.position.set(0,THREE.MathUtils.lerp(28,9,flat)+explosion*24,0);
-  for(const part of parts.values())part.position.copy(part.userData.base).addScaledVector(part.userData.travel,explosion);
+  watch.position.set(0,THREE.MathUtils.lerp(28,9,flat)+explosion*24+6*flat,0);
+  for(const part of parts.values()){
+    part.position.copy(part.userData.base).addScaledVector(part.userData.travel,explosion);
+    if(part.userData.screw){
+      part.position.addScaledVector(part.userData.radial,screwFanDistance*screwFan);
+      if(part.userData.fanOffset)part.position.addScaledVector(part.userData.fanOffset,screwFan);
+      part.position.z-=screwWithdrawalDistance*screwWithdrawal;
+      part.rotation.z=-Math.PI*2*screwWithdrawalDistance/part.userData.screw.dimensions.threadPitch*screwWithdrawal;
+    }
+  }
   const zoom=1+flat*.04+explosion*.32;
-  camera.position.set(42*zoom,(40+45*flat)*zoom,112*zoom);
-  camera.lookAt(0,THREE.MathUtils.lerp(28,11,flat)+explosion*26,0);
+  camera.position.set(42*zoom,(40+45*flat)*zoom+6*flat,112*zoom);
+  const target=new THREE.Vector3(0,THREE.MathUtils.lerp(28,11,flat)+explosion*26+6*flat,0);
+  camera.lookAt(target);
+  if(screwFan>0)frameLooseHardware(target,screwFan);
   const time=phase>=17?phase-DURATION:phase;
   clock.render('analog',new Date(2026,10,7,10,8,52,Math.round(time*1000)));
   texture.needsUpdate=true;screenMaterial.color.setScalar(screenOn);
@@ -244,6 +273,15 @@ const ready=(async()=>{
   contact.rotation.x=-Math.PI/2;contact.position.y=.02;scene.add(contact);
   const plastic=plasticMaterial();
   for(const data of source.parts){const mesh=new THREE.Mesh(cadGeometry(data),plastic);mesh.castShadow=true;mesh.receiveShadow=true;addPart(data.id,mesh,data.id==='main_body'?[0,0,20]:data.id==='bottom_lid'?[0,0,-24]:[13,0,-5]);}
+  for(const screw of createLidScrews()){
+    screw.group.userData.radial=new THREE.Vector3(screw.seat[0],screw.seat[1],0).normalize();
+    // Once fully withdrawn, move the far screw sideways as well so the lid
+    // cannot obscure it in the exploded inspection view.
+    if(screw.id==='lid-screw-2')screw.group.userData.fanOffset=new THREE.Vector3(-21.2,-13.25,0);
+    screw.group.userData.screw.withdrawalDistance=screwWithdrawalDistance;
+    screw.group.userData.screw.fanDistance=screwFanDistance;
+    addPart(screw.id,screw.group,[0,0,-24]);
+  }
   buildBoard();await Promise.all([buildDisplay(),buildBattery()]);
   renderAt(0);button.hidden=false;controlState();
   if(!reduced.matches&&params.get('autoplay')!=='0')play();
