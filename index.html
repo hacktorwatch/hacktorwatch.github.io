@@ -16,6 +16,8 @@
   <link rel="stylesheet" href="styles.css">
   <script src="site-config.js" defer></script>
   <script src="app.js" defer></script>
+  <script src="assets/watch-animation/watch-assets.js" defer></script>
+  <script src="watch-demo/watch-demo.js" defer></script>
 <link rel="canonical" href="https://hacktorwatch.github.io/">
 <meta property="og:url" content="https://hacktorwatch.github.io/">
 </head>
@@ -69,7 +71,18 @@
           <p>Hacktor Watch brings sensors, a display, connectivity and audio into something you can actually wear. Start with the existing designs, write your own application, and see what happens when your code leaves the desk.</p>
           <a class="text-link" href="getting-started.html">Find your starting point <svg class="icon" aria-hidden="true" focusable="false"><use href="#arrow"/></svg></a>
         </div>
-        <figure class="wrist-figure" data-reveal><img src="assets/wrist-hello.webp" width="1120" height="1400" alt="A real Hacktor Watch prototype worn on the wrist, displaying Hello!" loading="lazy" decoding="async"><figcaption><span class="photo-index">001</span> The first milestone: make it say hello.</figcaption><span class="photo-corner" aria-hidden="true">HELLO, REAL WORLD.</span></figure>
+        <figure class="wrist-figure" data-reveal>
+          <div class="watch-animation" data-watch-animation data-assets="assets/watch-animation/">
+            <img data-watch-poster src="assets/watch-animation/poster.webp" width="1121" height="1403" alt="A real Hacktor Watch on the wrist, displaying its analog watchface" loading="lazy" decoding="async">
+            <canvas id="watch-canvas" width="1121" height="1403" role="img" hidden aria-label="Hacktor Watch on the wrist: analog hands move, then the display swipes to digital and back.">Hacktor Watch cycles between its analog and digital watchfaces.</canvas>
+            <button id="playback-toggle" class="watch-playback" type="button" hidden aria-controls="watch-canvas" aria-label="Play watch animation" title="Play watch animation">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+            </button>
+            <p id="demo-status" class="sr-only" role="status" aria-live="polite">Watchface animation loading.</p>
+          </div>
+          <figcaption><span class="photo-index">001</span> Two watchfaces. One open platform.</figcaption>
+          <span class="photo-corner" aria-hidden="true">YOUR CODE. ON YOUR WRIST.</span>
+        </figure>
       </div>
     </section>
 
