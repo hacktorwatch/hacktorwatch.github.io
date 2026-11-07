@@ -274,6 +274,46 @@
       "bytes": 177760,
       "sha256": "67819f89833239de8bc256f8020afeab0214b017c480737d5e9441e7c06e70a4",
       "operation": "Exact transparent-padding crop where present; proportional resize; WebP encoding. No retouch or new content."
+    },
+    {
+      "name": "watch-animation/wrist-clean.webp",
+      "kind": "edited real photograph",
+      "origin": "Built-in ImageGen clean plate from the supplied wrist-hello.webp.",
+      "operation": "Removed Hello lettering from LCD; preserved the photographic scene and glass reflections; encoded as WebP.",
+      "dimensions": [
+        1121,
+        1403
+      ],
+      "bytes": 101250,
+      "sha256": "8f8ea764056b427491fb275a86a70116566e60b1081657a83629b181d79fc574",
+      "notes": "Full source, exact built-in image edit prompt and reproduction instructions: docs/watch-animation.md. Sample UI values; not live hardware telemetry."
+    },
+    {
+      "name": "watch-animation/poster.webp",
+      "kind": "photographic display composite",
+      "origin": "Clean wrist photograph plus authentic firmware sprites and font atlases from the supplied first watch demo.",
+      "operation": "Measured LCD projection, exact firmware marker-mask recoloring and emissive screen blend; initial analog frame captured from the live canvas and encoded as WebP.",
+      "dimensions": [
+        1121,
+        1403
+      ],
+      "bytes": 112034,
+      "sha256": "27e6e7075627ac2f799a9fcdb656a7b5a9ae56c7b0cca4639d8578722e556ad7",
+      "notes": "Full source, exact built-in image edit prompt and reproduction instructions: docs/watch-animation.md. Sample UI values; not live hardware telemetry."
+    },
+    {
+      "name": "watch-animation/digital-digits.png",
+      "source": "Supplied firmware atlas plus tools/fonts/Roboto-Thin.ttf for digit 9 only",
+      "source_url": "https://github.com/googlefonts/roboto-2/blob/main/src/hinted/Roboto-Thin.ttf",
+      "kind": "code-generated UI bitmap atlas",
+      "operation": "Replaced malformed custom 9 with actual Roboto Thin glyph at existing cap height and 4-bit antialiasing. Cells 0\u20138 remain pixel-identical. Reproduction: tools/rebuild-digital-nine.py.",
+      "dimensions": [
+        440,
+        68
+      ],
+      "bytes": 5125,
+      "sha256": "29b81b44efc77884f16502abcc847bdc945fd0f7d41fd75b9d380904023ca899",
+      "license": "Roboto Thin source font: Apache 2.0, included under tools/fonts/."
     }
   ],
   "logos": [
