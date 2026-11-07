@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hacktor Watch · From the inside out</title>
+<style>
+:root{font-family:system-ui,sans-serif;background:#f2f0e9;color:#172023}*{box-sizing:border-box}body{margin:0;display:grid;place-items:center;min-height:100vh}main{width:min(100%,700px);padding:12px 16px 24px}video{display:block;width:100%;height:auto;aspect-ratio:4/5;border-radius:6px;background:#f2f0e9}p{display:flex;justify-content:space-between;gap:18px;padding-inline:8px;color:#69706b;font-size:11px;line-height:1.7}a{color:inherit;text-decoration:none}@media(max-width:480px){main{padding-inline:0}p{padding-inline:18px}}
+</style>
+</head>
+<body>
+<main>
+<video id="case-video" controls muted loop playsinline preload="metadata" poster="../assets/case-animation/poster.webp" width="960" height="1200" aria-label="Hacktor Watch with a running analog face, rotating face-up and opening into an exploded assembly">
+<source src="../assets/case-animation/case-demo.webm" type="video/webm">
+<source src="../assets/case-animation/case-demo.mp4" type="video/mp4">
+Watch the <a href="../assets/case-animation/case-demo.mp4">case animation</a>.
+</video>
+<p><span>The case, from the inside out.</span><a href="../index.html">Hacktor Watch ↗</a></p>
+</main>
+<script>
+const film=document.getElementById('case-video');
+const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+if(!reduced.matches)film.play().catch(()=>{});
+let resumeOnReturn=false;
+document.addEventListener('visibilitychange',()=>{if(document.hidden){resumeOnReturn=!film.paused;film.pause();}else if(resumeOnReturn&&!reduced.matches)film.play().catch(()=>{});});
+reduced.addEventListener('change',event=>{if(event.matches)film.pause();});
+</script>
+</body>
+</html>

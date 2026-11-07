@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hacktor Watch · Inside the case</title>
+  <link rel="stylesheet" href="case-demo.css">
+  <script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script>
+  <script src="../assets/case-animation/models.js"></script>
+  <script src="../assets/watch-animation/watch-assets.js"></script>
+  <script src="../assets/watch-animation/watch-face-renderer.js"></script>
+  <script type="module" src="case-demo.js"></script>
+</head>
+<body>
+  <main>
+    <div class="case-stage">
+      <canvas id="case-canvas" width="1200" height="1500" role="img" aria-label="A running analog Hacktor Watch rotates face-up, then opens into an exploded view of the case, display, battery and circuit board."></canvas>
+      <span class="stage-label" id="case-stage" aria-hidden="true">Assembled</span>
+      <button id="case-playback" type="button" aria-label="Play case animation" hidden>Play</button>
+      <p id="case-status" class="sr-only" role="status" aria-live="polite">Loading the watch case.</p>
+    </div>
+    <div class="timeline"><label class="sr-only" for="case-seek">Animation position</label><input id="case-seek" type="range" min="0" max="20" step="0.01" value="0"><div><button type="button" data-case-seek="0">The watch</button><button type="button" data-case-seek="7.5">Face-up</button><button type="button" data-case-seek="12.5">Inside</button></div></div>
+    <p class="caption">The case, from the inside out. <a href="../index.html">Back to Hacktor Watch <span aria-hidden="true">↗</span></a></p>
+  </main>
+</body>
+</html>
