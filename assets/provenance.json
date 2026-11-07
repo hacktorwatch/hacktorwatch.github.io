@@ -397,5 +397,101 @@
       "notes": "The supplied styled hero placed beside website headline text; no new hardware features rendered.",
       "sha256": "85da50af52de985889895fce9ad5f13363c5144655fe64534450d34108262ec6"
     }
-  ]
+  ],
+  "case_animation": {
+    "kind": "rendered 3D mechanical animation",
+    "source_commit": "8234d9b112e0746e14f4d84727739cc576a49137",
+    "source_repository": "https://github.com/hacktorwatch/Hacktor-Watch-2.0",
+    "source_geometry": [
+      "Mechanical/main_body.stl",
+      "Mechanical/bottom_lid.stl",
+      "Mechanical/button_pushers.stl",
+      "Hardware/hacktor_watch2.brd"
+    ],
+    "retained_source_triangles": 16062,
+    "rendering": "Local Three.js 0.160.1 studio render with shared corrected analog face; rounded sealed foil battery pouch and four independently animated helical lid screws. Single outer material surfaces, filtered textures and camera depth precision prevent surface interference.",
+    "limits": "Display and battery solids, PCB thickness and component body heights are visual reconstructions, not manufacturing CAD. See docs/case-animation.md.",
+    "duration_seconds": 20,
+    "video_dimensions": [
+      960,
+      1200
+    ],
+    "fps": 30,
+    "frames": 600,
+    "files": [
+      {
+        "name": "case-animation/models.js",
+        "bytes": 1094997,
+        "sha256": "3a18983ebd4afb6bccfa7dd59c100e33fd865a5ea8c01947f3bb268f31baf4c7"
+      },
+      {
+        "name": "case-animation/poster.webp",
+        "bytes": 63320,
+        "sha256": "99e484231eeb2cbb0928d2a11754db4ae2976a0cb00c7eec8c1330cd001b709a"
+      },
+      {
+        "name": "case-animation/case-demo.mp4",
+        "bytes": 7117407,
+        "sha256": "e8789409862f5a07bf6e975c6df99556c1ae2c81140e866a2830ec1c08516054"
+      },
+      {
+        "name": "case-animation/case-demo.webm",
+        "bytes": 9028561,
+        "sha256": "257985bbe506ef2371cafbf3e712a1c43091652e8a511b7f82d95495518ffaf9"
+      }
+    ],
+    "stack_order": [
+      "display",
+      "pcb",
+      "battery",
+      "bottom_lid"
+    ],
+    "battery_model": {
+      "envelope_mm": [
+        20,
+        30,
+        3.6
+      ],
+      "triangles": 24776,
+      "features": [
+        "rounded pillowed pouch",
+        "crimped seal",
+        "folded foil shoulders",
+        "taped protection header",
+        "original photographic printing"
+      ],
+      "module": "case-demo/battery-pack.js"
+    },
+    "lid_screws": {
+      "count": 4,
+      "module": "case-demo/lid-screws.js",
+      "mounting_axes_source": "Measured from original bottom_lid.stl",
+      "hole_diameter_mm": 1.6,
+      "counterbore_diameter_mm": 2.5,
+      "geometry": "continuous helical shaft, domed head and recessed cross drive",
+      "dimensions_note": "Thread and head dimensions are visual reconstructions; no fastener CAD is published upstream."
+    }
+  },
+  "hero_clock": {
+    "kind": "Live local analog watchface composited into the supplied hero illustration",
+    "source": "hero-watch.webp",
+    "preparation": "tools/prepare-hero-clock.cjs: native Canvas rectification and local harmonic interpolation beneath the baked date and hands",
+    "runtime": "assets/hero-clock/hero-clock.js",
+    "bundle": "assets/hero-clock/dial.js",
+    "bytes": 334808,
+    "sha256": "01c7644718625148b736caa25a61849649a00cd610c6b44f10dc532265035494",
+    "source_unchanged": true,
+    "plane_dimensions": [
+      512,
+      512
+    ],
+    "marker_fit_rms_source_pixels": 0.9966558019052255,
+    "static_values": {
+      "steps": 1957,
+      "battery": 49
+    },
+    "time_source": "Visitor browser local Date; no network time/location/device readings",
+    "date_font_source": "Existing firmware glyph atlas in assets/watch-animation",
+    "details": "docs/hero-clock.md"
+  }
 }
