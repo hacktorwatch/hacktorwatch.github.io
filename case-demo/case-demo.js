@@ -43,8 +43,8 @@ function cadGeometry(part) {
   g.setIndex(part.indices); g.computeBoundingSphere();
   return g;
 }
-function cylinder(radius, height, material) {
-  const mesh = new THREE.Mesh(new THREE.CylinderGeometry(radius,radius,height,128),material);
+function cylinder(radius, height, material, openEnded = false) {
+  const mesh = new THREE.Mesh(new THREE.CylinderGeometry(radius,radius,height,128,1,openEnded),material);
   mesh.rotation.x = Math.PI/2;
   mesh.castShadow = true; mesh.receiveShadow = true;
   return mesh;
@@ -56,10 +56,11 @@ function image(url) {
 }
 function plasticMaterial() {
   const material = new THREE.MeshPhysicalMaterial({color:0x14191d,roughness:.55,metalness:0,clearcoat:.08,clearcoatRoughness:.6,specularIntensity:.65,envMapIntensity:.8});
-  // Fine molded/printed-polymer roughness, evaluated in model coordinates.
+  // Smooth, footprint-filtered polymer grain. The previous subpixel hash cells
+  // changed abruptly as the case moved and produced specular sparkle.
   material.onBeforeCompile = shader => {
     shader.vertexShader = shader.vertexShader.replace('#include <common>','#include <common>\nvarying vec3 vGrain;').replace('#include <begin_vertex>','#include <begin_vertex>\nvGrain=position;');
-    shader.fragmentShader = shader.fragmentShader.replace('#include <common>','#include <common>\nvarying vec3 vGrain;').replace('#include <roughnessmap_fragment>','#include <roughnessmap_fragment>\nfloat grain=fract(sin(dot(floor(vGrain*42.0),vec3(12.9898,78.233,37.719)))*43758.5453); roughnessFactor=clamp(roughnessFactor+(grain-.5)*.11,0.0,1.0);');
+    shader.fragmentShader = shader.fragmentShader.replace('#include <common>','#include <common>\nvarying vec3 vGrain;').replace('#include <roughnessmap_fragment>','#include <roughnessmap_fragment>\nfloat footprint=max(length(dFdx(vGrain)),length(dFdy(vGrain))); float grain=sin(dot(vGrain,vec3(18.7,7.3,11.1)))*sin(dot(vGrain,vec3(5.9,21.3,13.7))); float grainVisibility=1.0-smoothstep(.035,.12,footprint); roughnessFactor=clamp(roughnessFactor+grain*.018*grainVisibility,0.0,1.0);');
   };
   return material;
 }
@@ -100,14 +101,22 @@ function buildBoard() {
   }
   const geometry=new THREE.ExtrudeGeometry(shape,{depth:.8,bevelEnabled:false,curveSegments:64});
   geometry.translate(0,0,3.6);
-  const core=new THREE.Mesh(geometry,new THREE.MeshStandardMaterial({color:0x7e8050,roughness:.7}));
-  core.castShadow=true;core.receiveShadow=true;pcb.add(core);
-  for (const side of ['top','bottom']) {
-    const g=new THREE.ShapeGeometry(shape,64), uv=g.attributes.uv, p=g.attributes.position;
-    for(let i=0;i<p.count;i++)uv.setXY(i,(p.getX(i)+25)/50,(p.getY(i)+25)/50);
-    const mesh=new THREE.Mesh(g,new THREE.MeshStandardMaterial({map:boardTexture(side),roughness:.46,metalness:.15,side:THREE.DoubleSide}));
-    mesh.position.z=side==='top'?4.405:3.595;mesh.receiveShadow=true;pcb.add(mesh);
+  // Each physical PCB face belongs to this one solid. Separate skins only
+  // .005 mm above closed substrate caps caused depth-buffer interference.
+  const p=geometry.attributes.position, normal=geometry.attributes.normal, uv=geometry.attributes.uv;
+  for(let i=0;i<p.count;i++)uv.setXY(i,(p.getX(i)+25)/50,(p.getY(i)+25)/50);
+  geometry.clearGroups();
+  for(let i=0;i<p.count;i+=3){
+    const nz=normal.getZ(i), materialIndex=nz>.99?0:nz<-.99?1:2;
+    const last=geometry.groups[geometry.groups.length-1];
+    if(last?.materialIndex===materialIndex)last.count+=3;
+    else geometry.addGroup(i,3,materialIndex);
   }
+  const top=new THREE.MeshStandardMaterial({map:boardTexture('top'),roughness:.46,metalness:.15});top.name='pcb-top';
+  const bottom=new THREE.MeshStandardMaterial({map:boardTexture('bottom'),roughness:.46,metalness:.15});bottom.name='pcb-bottom';
+  const edge=new THREE.MeshStandardMaterial({color:0x7e8050,roughness:.7});edge.name='pcb-substrate-edge';
+  const board=new THREE.Mesh(geometry,[top,bottom,edge]);board.name='pcb-solid';
+  board.castShadow=true;board.receiveShadow=true;pcb.add(board);
   const chip=new THREE.MeshStandardMaterial({color:0x171b1e,roughness:.65,metalness:.04});
   const ceramic=new THREE.MeshStandardMaterial({color:0x8c8057,roughness:.43,metalness:.12});
   const metal=new THREE.MeshStandardMaterial({color:0xaeb4b5,roughness:.25,metalness:.9});
@@ -134,18 +143,22 @@ function buildBoard() {
 async function buildDisplay() {
   const group=new THREE.Group();
   const shell=new THREE.MeshStandardMaterial({color:0x171b1e,roughness:.35,metalness:.15});
-  const backing=cylinder(20.8,1.25,shell);backing.position.z=5.1;group.add(backing);
+  // The housing has side walls and a rear plate; its front is open. The bezel
+  // and active LCD close disjoint areas of that opening at the same depth.
+  const backing=cylinder(20.8,1.25,shell,true);backing.name='display-housing-wall';backing.position.z=5.1;group.add(backing);
+  const rearMaterial=shell.clone();rearMaterial.side=THREE.BackSide;
+  const rear=new THREE.Mesh(new THREE.CircleGeometry(20.8,128),rearMaterial);rear.name='display-backplate';rear.position.z=4.475;rear.castShadow=true;group.add(rear);
   const dark=new THREE.MeshStandardMaterial({color:0x010304,roughness:.22,metalness:0,envMapIntensity:.15});
-  const bezel=new THREE.Mesh(new THREE.CircleGeometry(21.1,128),dark);bezel.position.z=5.74;group.add(bezel);
+  const bezel=new THREE.Mesh(new THREE.RingGeometry(16.25,21.1,128),dark);bezel.name='display-bezel';bezel.position.z=5.9;group.add(bezel);
   const names=['analog-dial.png','hour-hand.png','minute-hand.png','second-hand.png','shoe-icon.png','font2-atlas.png','roboto-thin24-atlas.png','digital-digits.png'];
   const images=Object.fromEntries(await Promise.all(names.map(async name=>[name,await image(new URL(`../assets/watch-animation/${name}`,import.meta.url).href)])));
   clock=window.createWatchFaceRenderer({metadata:window.WATCH_DEMO_ASSETS.metadata,images});
   clock.render('analog',new Date(2026,10,7,10,8,52));
   texture=new THREE.CanvasTexture(clock.canvas);texture.colorSpace=THREE.SRGBColorSpace;texture.anisotropy=8;
   screenMaterial=new THREE.MeshBasicMaterial({map:texture,toneMapped:false});
-  const lcd=new THREE.Mesh(new THREE.CircleGeometry(16.25,128),screenMaterial);lcd.position.z=5.77;group.add(lcd);
+  const lcd=new THREE.Mesh(new THREE.CircleGeometry(16.25,128),screenMaterial);lcd.name='display-lcd';lcd.position.z=5.9;group.add(lcd);
   const glass=new THREE.Mesh(new THREE.CircleGeometry(21.1,128),new THREE.MeshPhysicalMaterial({color:0xf6faff,roughness:.06,metalness:0,transmission:1,thickness:.4,ior:1.48,clearcoat:0,envMapIntensity:.2,specularIntensity:.35}));
-  glass.position.z=5.80;group.add(glass);
+  glass.name='display-glass';glass.position.z=6.02;group.add(glass);
   addPart('display',group,[0,0,37]);
 }
 async function buildBattery() {
@@ -213,7 +226,9 @@ const ready=(async()=>{
   renderer.setPixelRatio(1);renderer.setSize(1200,1500,false);
   renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;
   renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
-  camera=new THREE.PerspectiveCamera(32,4/5,.1,1000);
+  // Millimetre-scale assembly: use a close-fitting depth range rather than a
+  // .1-to-1000 range whose precision could not distinguish nearby surfaces.
+  camera=new THREE.PerspectiveCamera(32,4/5,10,350);
   const pmrem=new THREE.PMREMGenerator(renderer),room=new RoomEnvironment(renderer);
   scene.environment=pmrem.fromScene(room,.04).texture;room.dispose();pmrem.dispose();
   const key=new THREE.DirectionalLight(0xfff5e4,3.2);key.position.set(-55,100,80);key.castShadow=true;
