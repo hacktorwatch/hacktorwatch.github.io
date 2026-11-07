@@ -18,6 +18,8 @@
   <script src="app.js" defer></script>
   <script src="assets/watch-animation/watch-assets.js" defer></script>
   <script src="assets/watch-animation/watch-face-renderer.js" defer></script>
+  <script src="assets/hero-clock/dial.js" defer></script>
+  <script src="assets/hero-clock/hero-clock.js" defer></script>
   <script src="watch-demo/watch-demo.js" defer></script>
 <link rel="canonical" href="https://hacktorwatch.github.io/">
 <meta property="og:url" content="https://hacktorwatch.github.io/">
@@ -56,7 +58,10 @@
             <ellipse cx="350" cy="390" rx="208" ry="282"/><ellipse cx="350" cy="390" rx="224" ry="299"/><ellipse cx="350" cy="390" rx="240" ry="316"/><ellipse cx="350" cy="390" rx="256" ry="333"/><ellipse cx="350" cy="390" rx="272" ry="350"/><ellipse cx="350" cy="390" rx="288" ry="367"/><ellipse cx="350" cy="390" rx="304" ry="384"/>
           </g></svg>
           <span class="hero-coordinate hero-coordinate-top">HACKTOR / 2.0</span>
-          <picture><source media="(max-width: 640px)" srcset="assets/hero-watch-640.webp"><img class="hero-watch" src="assets/hero-watch.webp" width="1083" height="1319" alt="Hacktor Watch with a round analog watchface, black case and yellow strap" fetchpriority="high" decoding="async"></picture>
+          <div class="hero-watch" data-hero-clock>
+            <picture><source media="(max-width: 640px)" srcset="assets/hero-watch-640.webp"><img class="hero-watch-image" src="assets/hero-watch.webp" width="1083" height="1319" alt="Hacktor Watch with a round analog watchface, black case and yellow strap" fetchpriority="high" decoding="async"></picture>
+            <canvas data-hero-clock-canvas width="512" height="512" role="img" hidden aria-label="Hacktor Watch showing your local time and date, with 1957 steps and 49% battery.">Hacktor Watch showing your local time and date.</canvas>
+          </div>
           <span class="hero-coordinate hero-coordinate-bottom"><span></span> DESIGNED TO BE OPENED.</span>
         </div>
       </div>
