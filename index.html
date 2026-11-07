@@ -17,6 +17,7 @@
   <script src="site-config.js" defer></script>
   <script src="app.js" defer></script>
   <script src="assets/watch-animation/watch-assets.js" defer></script>
+  <script src="assets/watch-animation/watch-face-renderer.js" defer></script>
   <script src="watch-demo/watch-demo.js" defer></script>
 <link rel="canonical" href="https://hacktorwatch.github.io/">
 <meta property="og:url" content="https://hacktorwatch.github.io/">
@@ -80,7 +81,7 @@
             </button>
             <p id="demo-status" class="sr-only" role="status" aria-live="polite">Watchface animation loading.</p>
           </div>
-          <figcaption><span class="photo-index">001</span> Open platform for your next breakout hit.</figcaption>
+          <figcaption><span class="photo-index">001</span> Two watchfaces. One open platform.</figcaption>
           <span class="photo-corner" aria-hidden="true">YOUR CODE. ON YOUR WRIST.</span>
         </figure>
       </div>
@@ -115,9 +116,23 @@
       </div>
     </section>
 
-    <section class="mechanics light-section section-space" aria-labelledby="mechanics-title">
+    <section class="mechanics light-section section-space" id="mechanics" aria-labelledby="mechanics-title">
       <div class="container mechanics-grid">
-        <figure class="exploded-figure" data-reveal><a href="assets/exploded.webp" data-lightbox data-caption="Exploded mechanical CAD view from the Hacktor Watch repository." aria-label="Enlarge the exploded mechanical view"><img src="assets/exploded.webp" width="1119" height="1400" alt="Exploded CAD view showing the layers of the Hacktor Watch enclosure and assembly" loading="lazy" decoding="async"><span class="image-enlarge"><svg class="icon" aria-hidden="true" focusable="false"><use href="#plus"/></svg> Explore the layers</span></a><figcaption>Mechanical CAD / from the project repository</figcaption></figure>
+        <figure class="exploded-figure" data-reveal>
+          <div class="case-film-frame" data-case-video>
+            <img class="case-film-poster" data-case-video-poster src="assets/case-animation/poster.webp" width="960" height="1200" alt="3D rendering of the assembled Hacktor Watch displaying its analog face" loading="lazy" decoding="async">
+            <video id="case-film" data-case-film width="960" height="1200" controls muted loop playsinline preload="metadata" poster="assets/case-animation/poster.webp" aria-label="Hacktor Watch runs its analog face, rotates face-up and opens into an exploded view of the assembly">
+              <source src="assets/case-animation/case-demo.mp4" type="video/mp4">
+              <source src="assets/case-animation/case-demo.webm" type="video/webm">
+              Hacktor Watch rotates from its running analog face into an exploded view of the case and internal layers.
+            </video>
+            <button class="case-film-toggle" data-case-video-toggle type="button" hidden aria-controls="case-film" aria-label="Play case animation" title="Play case animation">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+            </button>
+            <p class="sr-only" data-case-video-status role="status" aria-live="polite">Case animation loading.</p>
+          </div>
+          <figcaption class="case-film-caption"><span>Mechanical CAD / from the project repository</span><a href="assets/exploded.webp" data-lightbox data-caption="Exploded mechanical CAD view from the Hacktor Watch repository." aria-label="Enlarge the exploded mechanical view">Explore the layers <svg class="icon" aria-hidden="true" focusable="false"><use href="#plus"/></svg></a></figcaption>
+        </figure>
         <div class="mechanics-copy" data-reveal><p class="eyebrow">03 / MAKE IT YOURS</p><h2 id="mechanics-title">Open beyond<br>the code.</h2><p class="large-copy">The enclosure is part of the platform, too.</p><p>Explore the case, understand the assembly and adapt the physical design to your project. The mechanical files live alongside the electronics and firmware.</p><a class="text-link" href="https://github.com/hacktorwatch/Hacktor-Watch-2.0/tree/main/Mechanical">Get the mechanical files <svg class="icon" aria-hidden="true" focusable="false"><use href="#external"/></svg></a><div class="mechanical-tags"><span>Explore the assembly</span><span>Adapt the enclosure</span><span>Build your own</span></div></div>
       </div>
     </section>

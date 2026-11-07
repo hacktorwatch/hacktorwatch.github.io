@@ -109,6 +109,110 @@
     revealElements.forEach((element) => element.classList.add('is-visible'));
   }
 
+  document.querySelectorAll('[data-case-video]').forEach((container) => {
+    const film = container.querySelector('[data-case-film]');
+    const toggle = container.querySelector('[data-case-video-toggle]');
+    const poster = container.querySelector('[data-case-video-poster]');
+    const status = container.querySelector('[data-case-video-status]');
+    if (!film || !toggle || !poster) return;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const sources = [...film.querySelectorAll('source')];
+    let wantsPlayback = !reducedMotion.matches;
+    let inView = !('IntersectionObserver' in window);
+    let unavailable = false;
+    film.controls = false;
+    // Keep the media element paintable while its first frame loads. Its native
+    // poster supplies the loading still; hidden muted video can defer decoding
+    // in Chrome and leave a playing clock underneath an unchanged poster.
+    film.hidden = false;
+    film.muted = true;
+    toggle.hidden = false;
+
+    function buttonState() {
+      const playing = !film.paused && !film.ended && film.readyState >= 2;
+      const label = playing ? 'Pause case animation' : 'Play case animation';
+      toggle.setAttribute('aria-label', label);
+      toggle.title = label;
+      toggle.querySelector('path').setAttribute('d', playing ? 'M7 5h4v14H7zm6 0h4v14h-4z' : 'M8 5v14l11-7z');
+      if (status && !unavailable) status.textContent = playing ? 'Case animation playing.' : 'Case animation paused.';
+    }
+    function syncPlayback() {
+      if (unavailable) return;
+      if (film.networkState === film.NETWORK_NO_SOURCE && film.readyState === 0) {
+        showPoster();
+        return;
+      }
+      if (wantsPlayback && inView && !document.hidden) {
+        film.play().catch((error) => {
+          // Leaving the viewport can cancel an in-flight play request.
+          if (error.name === 'AbortError') return;
+          if (error.name === 'NotSupportedError' || film.error) {
+            showPoster();
+            return;
+          }
+          wantsPlayback = false;
+          film.pause();
+          buttonState();
+        });
+      } else film.pause();
+      buttonState();
+    }
+    function showFilm() {
+      if (unavailable) return;
+      film.hidden = false;
+      poster.setAttribute('aria-hidden', 'true');
+      container.dataset.ready = 'true';
+      buttonState();
+    }
+    function showPoster() {
+      unavailable = true;
+      wantsPlayback = false;
+      film.pause();
+      film.hidden = true;
+      toggle.hidden = true;
+      poster.removeAttribute('aria-hidden');
+      container.dataset.ready = 'false';
+      if (status) status.textContent = 'Case animation unavailable. Showing the assembled watch.';
+    }
+    function checkSourceExhaustion() {
+      if (!unavailable && film.networkState === film.NETWORK_NO_SOURCE && film.readyState === 0) showPoster();
+    }
+    toggle.addEventListener('click', () => {
+      wantsPlayback = film.paused;
+      syncPlayback();
+    });
+    film.addEventListener('loadeddata', showFilm);
+    film.addEventListener('playing', showFilm);
+    film.addEventListener('play', buttonState);
+    film.addEventListener('pause', buttonState);
+    film.addEventListener('error', showPoster);
+    sources.forEach((source) => source.addEventListener('error', () => {
+      // A failed format may be followed by a usable alternative. Chrome can
+      // exhaust all <source> candidates without setting video.error, so also
+      // inspect NETWORK_NO_SOURCE after selection has tried the alternatives.
+      setTimeout(checkSourceExhaustion, 0);
+    }));
+    // Deferred scripts can attach after early source-error events have fired.
+    setTimeout(checkSourceExhaustion, 0);
+    window.addEventListener('load', checkSourceExhaustion, {once: true});
+    reducedMotion.addEventListener('change', (event) => {
+      if (event.matches) wantsPlayback = false;
+      syncPlayback();
+    });
+    document.addEventListener('visibilitychange', syncPlayback);
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver((entries) => {
+        inView = entries[0].isIntersecting;
+        syncPlayback();
+      }).observe(container);
+    }
+    if (film.error) showPoster();
+    else {
+      if (film.readyState >= 2) showFilm();
+      syncPlayback();
+    }
+  });
+
   document.querySelectorAll('[data-copy-email]').forEach((button) => {
     const email = button.dataset.email || window.HACKTOR_SITE_CONFIG?.contactEmail;
     const card = button.closest('[data-contact-card]');
